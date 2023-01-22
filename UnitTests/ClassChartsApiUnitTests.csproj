@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ClasschartsApi\ClassChartsApi.csproj" />
+		<ProjectReference Include="..\ClassChartsApi.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
