@@ -4,8 +4,10 @@
 name: Build .NET NuGet package
 
 on:
-  deployment:
-    branches: [ "main" ]
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-package:
