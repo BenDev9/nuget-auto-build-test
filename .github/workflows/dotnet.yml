@@ -32,7 +32,7 @@ jobs:
     - name: Set up test environment
       run: | 
         echo "{\"classcharts_code\": \"$CLASSCHARTS_CODE\",\"date_of_birth\":  \"$CLASSCHARTS_DOB\"}" >> ./UnitTests/appsettings.json
-        echo ./UnitTests/appsettings.json
+        cat ./UnitTests/appsettings.json
     - name: Build
       run: dotnet build --no-restore
     - name: Test
