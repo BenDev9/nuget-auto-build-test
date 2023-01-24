@@ -9,10 +9,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  CLASSCHARTS_CODE: ${{ secrets.CLASSCHARTS_CODE }}
-  CLASSCHARTS_DOB: ${{ secrets.CLASSCHARTS_DOB }}
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -30,6 +26,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Set up test environment
+      env:
+        CLASSCHARTS_CODE: ${{ secrets.CLASSCHARTS_CODE }}
+        CLASSCHARTS_DOB: ${{ secrets.CLASSCHARTS_DOB }}
       run: | 
         echo "{\"classcharts_code\": \"${CLASSCHARTS_CODE}\",\"date_of_birth\":  \"${CLASSCHARTS_DOB}\"}" >> ./UnitTests/appsettings.json
         cat ./UnitTests/appsettings.json
