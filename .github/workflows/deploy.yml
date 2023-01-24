@@ -5,12 +5,15 @@ name: Build .NET NuGet package
 
 on:
   pull_request:
+    types:
+      - closed
     branches:
       - main
   workflow_dispatch:
 
 jobs:
   build-and-test:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,6 +33,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
   build-and-deploy-package:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     needs: build-and-test
     environment:
