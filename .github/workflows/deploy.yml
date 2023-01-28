@@ -4,10 +4,9 @@
 name: Build .NET NuGet package
 
 on:
-  pull_request_review:
-      types:
-        - submitted
-      branches: [main]
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
