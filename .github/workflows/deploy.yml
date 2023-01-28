@@ -1,0 +1,34 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: Build .NET NuGet package
+
+on:
+  pull_request_review:
+      types:
+        - submitted
+      branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-package:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    environment:
+      name: Deployment
+      url: https://www.nuget.org/packages/ClassCharts.Api.Student/
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build NuGet package
+        run: dotnet build
+      - uses: edumserrano/nuget-push@v1.2.0
+        with:
+          api-key: ${{ secrets.nuget_key }}
+          nuget-package: ./bin/Debug/ClassCharts.Api.Student.*.*.*.nupkg

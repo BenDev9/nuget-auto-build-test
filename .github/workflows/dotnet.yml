@@ -1,27 +1,38 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Build .NET NuGet package
+name: .NET
 
 on:
-  deployment:
+  push:
+    branches: [ "main" ]
+  pull_request:
     branches: [ "main" ]
 
 jobs:
-  build-and-deploy-package:
+  build-and-test:
     runs-on: ubuntu-latest
-    
+    environment: Testing
+    strategy:
+      matrix:
+        dotnet-version: ['6.0.x', '7.0.x']
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build NuGet package
-        run: dotnet build
-      - uses: edumserrano/nuget-push@v1.2.0
-        with:
-          api-key: ${{ secrets.nuget_key }}
-          nuget-package: ./bin/Debug/ClassCharts.Api.Student.*.*.*.nupkg
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Set up test environment
+      env:
+        CLASSCHARTS_CODE: ${{ secrets.CLASSCHARTS_CODE }}
+        CLASSCHARTS_DOB: ${{ secrets.CLASSCHARTS_DOB }}
+      run: | 
+        echo "{\"classcharts_code\": \"${CLASSCHARTS_CODE}\",\"date_of_birth\":  \"${CLASSCHARTS_DOB}\"}" > ./UnitTests/appsettings.json
+        cat ./UnitTests/appsettings.json
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
